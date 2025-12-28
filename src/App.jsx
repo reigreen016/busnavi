@@ -33,8 +33,9 @@ const CALLOUT_DISTANCE = 8;
 const CALLOUT_PERP_SPACING = 2.4;
 const CALLOUT_SLOT_SEQUENCE = [0, 1, -1, 2, -2, 3, -3];
 const DISPLAY_COUNT = 10;
-const WEEKDAY_FILE = "/hiroshima_station_weekday_timetable.csv";
-const WEEKEND_FILE = "/hiroshima_station_weekend_timetable.csv";
+const WEEKDAY_FILE = new URL("./hiroshima_station_weekday_timetable.csv", import.meta.env.BASE_URL).toString();
+const WEEKEND_FILE = new URL("./hiroshima_station_weekend_timetable.csv", import.meta.env.BASE_URL).toString();
+const MAP_IMAGE = new URL("./test2.png", import.meta.env.BASE_URL).toString();
 
 function App() {
   const [referenceDate, setReferenceDate] = useState(() => getCurrentDateString());
@@ -147,7 +148,7 @@ function MapPanel({ highlight }) {
     <div className="space-y-3">
       <h2 className="text-xl font-semibold text-slate-900">バスのりば案内（広島駅南口）</h2>
       <div className="map-wrapper" aria-label="バスのりばマップ">
-        <img src="/test2.png" alt="広島駅南口バスのりばマップ" loading="lazy" />
+        <img src={MAP_IMAGE} alt="広島駅南口バスのりばマップ" loading="lazy" />
         {STOP_LIST.map((stop) => {
           const markerState = highlight.activeMarkers[stop.id] || {};
           const classes = [
