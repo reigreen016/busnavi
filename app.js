@@ -1,6 +1,6 @@
-import {strings,translate,arrivalTime} from './i18n.js';
+import {strings,translate,arrivalTime} from './i18n.js?v=10';
 import {selectTrips} from './schedule.js';
-import {time,departureMarkup} from './presentation.js';
+import {time,departureMarkup} from './presentation.js?v=10';
 import {applyRealtime,createRealtimePoller,fresh} from './realtime.js';
 const REALTIME_ENDPOINT='https://busnavi-realtime.rnp9cf8k76.workers.dev/api/realtime';
 let snapshot=null,poller;
