@@ -7,3 +7,11 @@ export function departureMarkup(trip, lang) {
   const onTime = trip.predictedDeparture && trip.departure === trip.scheduledDeparture;
   return `<span class="effective-time">${time(trip.departure)}</span><small class="prediction-label${onTime ? ' prediction-label--ontime' : ''}">${onTime ? text.onTime : trip.predictedDeparture ? text.predicted : text.scheduledShort}</small>`;
 }
+
+export function destinationLabel(value,lang){
+ if(!value)return '';
+ if(lang==='ja')return /行(?:き)?$/.test(value)?value:value+' 行';
+ if(lang==='en')return 'To '+value;
+ if(lang==='ko')return value+' 방면';
+ return (lang==='zh-cn'?'开往':'往')+value;
+}

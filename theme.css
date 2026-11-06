@@ -95,3 +95,14 @@ button,input{font-family:inherit}button:focus-visible{outline:3px solid #285cd0;
 .trip,.trip--soon{padding-top:10px;padding-bottom:10px}
 @media(max-width:760px){.platform-row h3{font-size:18px}.platform-strip .overview-number{min-width:0;font-size:var(--number-size,56px)}}
 @media(prefers-reduced-motion:reduce){.trip--soon,body.phase-hachi .trip--soon{animation:none;background:#fff0c2;box-shadow:none}}
+
+/* Compact header, square boarding cells, and a little more breathing room for two digits. */
+.app-header{padding:10px 32px;gap:16px}.wordmark{font-size:32px}.clock-time{font-size:40px}
+.trip,.table-labels{grid-template-columns:96px 58px minmax(0,1fr)}
+.trip-platform{aspect-ratio:1;width:100%;height:auto;padding:0;display:grid;place-items:center;line-height:1;align-self:center}
+.departure-subline,.departure-subline .scheduled-time,.departure-subline .delay-minutes{font-size:11.5px;line-height:18px;min-height:18px}
+.trip-time>.prediction-label{min-height:18px;line-height:18px}
+.overview-number .number-glyph{display:inline-block;white-space:nowrap;line-height:1}
+.overview-number--double .number-glyph{transform:scaleX(.84);letter-spacing:-.025em}
+@media(max-width:1050px){.trip,.table-labels{grid-template-columns:80px 46px minmax(0,1fr)}}
+@media(max-width:760px){.app-header{padding:10px 16px;gap:12px}.wordmark{font-size:29px}.clock-time{font-size:34px}.trip,.table-labels{grid-template-columns:80px 44px minmax(0,1fr)}}
