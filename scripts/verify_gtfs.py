@@ -24,6 +24,7 @@ for i,feed in enumerate(data['feeds']):
    assert origin.get('pickup_type')!='1'
    assert t['platform']==stops[origin['stop_id']]['platform_code']
    assert t['departure']==sum(int(v)*u for v,u in zip(origin['departure_time'].split(':'),[3600,60,1]))
+   assert t['originArrival']==(sum(int(v)*u for v,u in zip(origin['arrival_time'].split(':'),[3600,60,1])) if origin['arrival_time'] else None)
    for name,ev in t['evidence'].items():
     dest=times[t['id']][ev['sequence']]
     assert ev['sequence']>t['originSequence']

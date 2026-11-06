@@ -35,7 +35,7 @@ def build(source):
         dests[name]=seconds(arrival['arrival_time']); evidence[name]=dict(stopId=arrival['stop_id'],sequence=int(arrival['stop_sequence']),dropOff=arrival.get('drop_off_type',''))
      if not dests or not origin['departure_time']: continue
      route=routes[t['route_id']]
-     out['trips'].append(dict(feed=idx,id=t['trip_id'],service=t['service_id'],departure=seconds(origin['departure_time']),origin=stop['stop_name'],platform=stop.get('platform_code',''),stopId=origin['stop_id'],route=route['route_short_name'] or route['route_long_name'],routeName=route['route_long_name'],agency=agencies.get(route['agency_id'],''),headsign=origin.get('stop_headsign') or t['trip_headsign'],destinations=dests,originSequence=int(origin['stop_sequence']),pickup=origin.get('pickup_type',''),evidence=evidence));count+=1
+     out['trips'].append(dict(feed=idx,id=t['trip_id'],service=t['service_id'],departure=seconds(origin['departure_time']),originArrival=seconds(origin['arrival_time']) if origin['arrival_time'] else None,origin=stop['stop_name'],platform=stop.get('platform_code',''),stopId=origin['stop_id'],route=route['route_short_name'] or route['route_long_name'],routeName=route['route_long_name'],agency=agencies.get(route['agency_id'],''),headsign=origin.get('stop_headsign') or t['trip_headsign'],destinations=dests,originSequence=int(origin['stop_sequence']),pickup=origin.get('pickup_type',''),evidence=evidence));count+=1
    print(path.name,count)
  # Keep calendar/translation records needed by the published departures only.
  for idx,feed in enumerate(out['feeds']):

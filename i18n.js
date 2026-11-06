@@ -27,8 +27,8 @@ Object.assign(strings.ko,{onTime:'정시'});
 Object.assign(strings['zh-cn'],{onTime:'准点'});
 Object.assign(strings['zh-tw'],{onTime:'準點'});
 
-Object.assign(strings.ja,{arrivalNote:'停留所の到着予測がある場合は予測時刻を表示し、未取得の場合は時刻表に（予定）を付けて表示します。'});
-Object.assign(strings.en,{arrivalNote:'Arrival predictions are shown where available. Otherwise the timetable time is marked as scheduled.'});
-Object.assign(strings.ko,{arrivalNote:'정류장 도착 예측이 있으면 예측 시각을 표시하고, 없으면 시간표 시각에 예정 표시를 붙입니다.'});
-Object.assign(strings['zh-cn'],{arrivalNote:'有车站到达预测时显示预测时间；未获取时显示时刻表时间并标注计划。'});
-Object.assign(strings['zh-tw'],{arrivalNote:'有站點抵達預測時顯示預測時間；未取得時顯示時刻表時間並標註預定。'});
+Object.assign(strings.ja,{arrivalNote:'到着時刻は停留所ごとの予測を優先します。予測がない場合は広島駅での到着遅延を予定時刻に加算し、遅延情報もない場合は予定時刻を表示します。のりば不明の便は表示しません。'});
+Object.assign(strings.en,{arrivalNote:'Arrival times use stop-specific predictions first, otherwise the scheduled time plus the arrival delay at Hiroshima Station. Without delay data, scheduled times are shown. Services without a known platform are omitted.'});
+Object.assign(strings.ko,{arrivalNote:'정류장별 도착 예측을 우선하며, 없으면 시간표 시각에 히로시마역 도착 지연을 더합니다. 지연 정보도 없으면 시간표 시각을 표시합니다. 승차장 미상 편은 제외합니다.'});
+Object.assign(strings['zh-cn'],{arrivalNote:'优先显示各站到达预测；没有预测时，将广岛站到达延误加到计划时刻上。没有延误信息时显示计划时刻。不显示站台未知的班次。'});
+Object.assign(strings['zh-tw'],{arrivalNote:'優先顯示各站抵達預測；沒有預測時，將廣島站抵達延誤加到預定時刻上。沒有延誤資訊時顯示預定時刻。不顯示月台未知的班次。'});

@@ -1,4 +1,4 @@
-// Only explicit, fresh stop predictions are used; no unobserved delay propagation.
+// Prefer fresh destination arrivals; otherwise carry forward the station arrival delay.
 export const REFRESH_MS = 30000;
 export const FRESH_SECONDS = 90;
 export function fresh(timestamp, nowSeconds) {
@@ -28,16 +28,21 @@ export function applyRealtime(trip, data, snapshot, date, nowSeconds) {
     return null;
   };
   const departure = origin?.relationship === 0 ? predicted(origin.departure, trip.departure) : null;
-  const destinations = {}, arrivalPredictions = {};
+  const stationArrival = origin?.relationship === 0 ? origin.arrival : null;
+  const stationDelay = Number.isFinite(stationArrival?.time) && Number.isFinite(trip.originArrival)
+    ? stationArrival.time - midnight - trip.originArrival
+    : Number.isFinite(stationArrival?.delay) ? stationArrival.delay : null;
+  const destinations = {}, arrivalPredictions = {}, arrivalSources = {};
   for (const [name, scheduled] of Object.entries(trip.destinations)) {
     const evidence = trip.evidence[name];
     const stop = match(evidence.stopId, evidence.sequence);
     if (stop?.relationship === 1) continue;
     const arrival = stop?.relationship === 0 ? predicted(stop.arrival, scheduled) : null;
-    destinations[name] = arrival ?? scheduled;
-    arrivalPredictions[name] = arrival != null;
+    destinations[name] = arrival ?? (stationDelay != null ? scheduled + stationDelay : scheduled);
+    arrivalPredictions[name] = arrival != null || stationDelay != null;
+    arrivalSources[name] = arrival != null ? 'realtime' : stationDelay != null ? 'station-delay' : 'scheduled';
   }
-  return { ...trip, destinations, arrivalPredictions, departure: departure ?? trip.departure,
+  return { ...trip, destinations, arrivalPredictions, arrivalSources, departure: departure ?? trip.departure,
     scheduledDeparture: trip.departure, predictedDeparture: departure != null };
 }
 

@@ -12,3 +12,9 @@ test('south-exit departures include buses headed to the Shinkansen exit',()=>{
   assert.ok(trips.every(t=>t.origin==='広島駅'));
  }
 });
+
+test('unknown and blank platforms are excluded from all guidance',()=>{
+ const source={...data.trips.find(t=>t.platform),service:'s',departure:36000};
+ const fixture={feeds:[{calendar:[{service_id:'s',start_date:'20261101',end_date:'20261130',friday:'1'}],exceptions:[]}],trips:['3','',null,undefined,'  '].map((platform,i)=>({...source,feed:0,id:String(i),platform}))};
+ assert.deepEqual(selectTrips(fixture,{stops:['紙屋町','八丁堀']},'2026-11-06',0).map(t=>t.platform),['3']);
+});

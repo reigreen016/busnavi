@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {applyRealtime,createRealtimePoller} from '../realtime.js';
 import {selectTrips} from '../schedule.js';
 const date='2026-11-06',midnight=Date.parse(date+'T00:00:00+09:00')/1000,now=midnight+36000;
-const data={feeds:[{file:'current_data-hirobus.zip',calendar:[{service_id:'s',start_date:'20261101',end_date:'20261130',friday:'1'}],exceptions:[]}],trips:[{feed:0,id:'t',service:'s',origin:'広島駅',departure:35940,stopId:'station',originSequence:2,destinations:{'紙屋町':36540,'八丁堀':36600},evidence:{'紙屋町':{stopId:'kami',sequence:4},'八丁堀':{stopId:'hachi',sequence:5}}}]};
+const data={feeds:[{file:'current_data-hirobus.zip',calendar:[{service_id:'s',start_date:'20261101',end_date:'20261130',friday:'1'}],exceptions:[]}],trips:[{feed:0,id:'t',service:'s',origin:'広島駅',platform:'3',originArrival:35880,departure:35940,stopId:'station',originSequence:2,destinations:{'紙屋町':36540,'八丁堀':36600},evidence:{'紙屋町':{stopId:'kami',sequence:4},'八丁堀':{stopId:'hachi',sequence:5}}}]};
 const update={tripId:'t',startDate:'20261106',relationship:0,stops:[{stopId:'station',sequence:2,relationship:0,departure:{delay:180}},{stopId:'kami',sequence:4,relationship:0,departure:{delay:200}}]};
 const snapshot=u=>({version:2,feeds:[{id:'hirobus',ok:true,timestamp:now,trips:[u]}]});
 const select=(u,stamp=now)=>selectTrips(data,{stops:['紙屋町','八丁堀']},date,36000,t=>applyRealtime(t,data,snapshot(u),date,stamp));
@@ -38,4 +38,25 @@ test('delayed departures are reordered before upcoming platform selection',()=>{
  assert.equal(trips[1].scheduledDeparture,35940);
  const html=departureMarkup(trips[1],'ja');assert.match(html,/<s[^>]*>09:59<\/s>/);assert.match(html,/effective-time--delayed">10:02/);assert.match(html,/\+3 分/);
  const normal=departureMarkup(trips[0],'ja');assert.doesNotMatch(normal,/<s\b|effective-time--delayed/);
+});
+
+test('destination arrivals prefer their prediction, otherwise use the station arrival delay',()=>{
+ const u=structuredClone(update);u.stops[0].arrival={delay:120};
+ let t=select(u)[0];assert.equal(t.destinations['紙屋町'],36660);assert.equal(t.destinations['八丁堀'],36720);assert.equal(t.arrivalSources['紙屋町'],'station-delay');
+ u.stops[1].arrival={delay:240};t=select(u)[0];assert.equal(t.destinations['紙屋町'],36780);assert.equal(t.arrivalSources['紙屋町'],'realtime');assert.equal(t.destinations['八丁堀'],36720);
+ // Arrival and departure differ because of the dwell time; never subtract the departure schedule.
+ u.stops[0].arrival={time:midnight+36060,delay:999};t=select(u)[0];assert.equal(t.destinations['八丁堀'],36780);
+ u.stops[0].arrival={delay:-60};t=select(u)[0];assert.equal(t.destinations['八丁堀'],36540);
+ // Stale and wrong-day station delays are ignored along with the rest of the update.
+ const scheduled={...data.trips[0],serviceDate:date};
+ assert.equal(applyRealtime(scheduled,data,snapshot(u),date,now+91).destinations['八丁堀'],36600);
+ assert.equal(applyRealtime(scheduled,data,snapshot({...u,startDate:'20261105'}),date,now).destinations['八丁堀'],36600);
+});
+test('station arrival delay across midnight uses the correct service-day offset',()=>{
+ const next='2026-11-07',nextMidnight=midnight+86400;
+ const source={...data.trips[0],departure:86460,originArrival:86400,destinations:{'紙屋町':87000},evidence:{'紙屋町':{stopId:'kami',sequence:4}}};
+ const fixture={...data,trips:[source]},u={...update,stops:[{...update.stops[0],arrival:{time:nextMidnight+120},departure:{delay:180}}]};
+ const snap=snapshot(u);snap.feeds[0].timestamp=nextMidnight+120;
+ const [t]=selectTrips(fixture,{stops:['紙屋町']},next,120,t=>applyRealtime(t,fixture,snap,next,nextMidnight+120));
+ assert.equal(t.destinations['紙屋町'],720);assert.equal(t.originArrival,0);
 });

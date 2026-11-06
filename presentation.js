@@ -1,4 +1,4 @@
-import {strings} from './i18n.js?v=16';
+import {strings} from './i18n.js?v=17';
 export const time = seconds => `${String(Math.floor(seconds / 3600) % 24).padStart(2, '0')}:${String(Math.floor(seconds / 60) % 60).padStart(2, '0')}`;
 export function departureMarkup(trip, lang) {
   const text = strings[lang];
