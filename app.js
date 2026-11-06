@@ -1,6 +1,7 @@
 import {strings,translate,arrivalTime} from './i18n.js?v=10';
-import {selectTrips} from './schedule.js';
-import {time,departureMarkup} from './presentation.js?v=10';
+import {selectTrips} from './schedule.js?v=14';
+import {fitPlatformStrips} from './platforms.js?v=14';
+import {time,departureMarkup} from './presentation.js?v=14';
 import {applyRealtime,createRealtimePoller,fresh} from './realtime.js';
 const REALTIME_ENDPOINT='https://busnavi-realtime.rnp9cf8k76.workers.dev/api/realtime';
 let snapshot=null,poller;
@@ -24,10 +25,11 @@ function render(){
  overview.push(`<div class="platform-row platform-row--${i?'hachi':'kami'}"><h3>${escape(translated(stop))}</h3><div class="platform-strip" tabindex="0" aria-label="${escape(translated(stop)+' '+text.platform)}">${pp.length?pp.map(p=>`<span class="overview-number">${escape(p)}</span>`).join(''):`<span class="platform-empty">${group.length?text.unknown:text.empty}</span>`}</div></div>`);
  pp.forEach(p=>{if(!platforms.has(p))platforms.set(p,new Set());platforms.get(p).add(i);});
  });
- $('#upcoming-platforms').innerHTML=overview.join('');
+ $('#upcoming-platforms').innerHTML=overview.join('');fitPlatformStrips();
  $('#map-labels').innerHTML=Object.entries(boxes).map(([p,b])=>{const tags=platforms.get(p)||new Set();return `<div data-platform="${p}" class="stop-highlight ${tags.has(0)?'serves-kami':''} ${tags.has(1)?'serves-hachi':''}" style="left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%"><span class="stop-number">${escape(p)}</span><div class="stop-tags">${[...tags].sort().map(i=>`<span class="stop-tag ${i?'tag-hachi':'tag-kami'}">${lang==='ja'?(i?'八':'紙'):(i?'H':'K')}</span>`).join('')}</div></div>`;}).join('');
 
- $('#trip-list').innerHTML=trips.slice(0,20).map(t=>`<li class="trip${t.departure-seconds<=180?' trip--soon':''}"><div class="trip-time">${departureMarkup(t,lang)}</div><div class="trip-platform">${escape(t.platform||'—')}</div><div class="trip-body"><div class="trip-route">${escape(translated(t.route,data.feeds[t.feed]))} <span class="trip-headsign-inline">${escape(translated(t.headsign,data.feeds[t.feed]))}</span></div><div class="trip-meta">${stops.filter(s=>s in t.destinations).map((s)=>`<span class="chip chip-${s==='紙屋町'?'kami':'hachi'}">${escape(translated(s,data.feeds[t.feed]))} ${escape(arrivalTime(time(t.destinations[s]),lang))}</span>`).join('')}</div><small class="trip-agency">${escape(translated(t.agency,data.feeds[t.feed]))}</small></div></li>`).join('');
+ const glowOffset=Date.now()%3000;
+ $('#trip-list').innerHTML=trips.slice(0,20).map(t=>`<li class="trip${t.departure-seconds<=180?' trip--soon':''}" style="--glow-offset:-${glowOffset}ms"><div class="trip-time">${departureMarkup(t,lang)}</div><div class="trip-platform">${escape(t.platform||'—')}</div><div class="trip-body"><div class="trip-route">${escape(translated(t.route,data.feeds[t.feed]))} <span class="trip-headsign-inline">${escape(translated(t.headsign,data.feeds[t.feed]))}</span></div><div class="trip-meta">${stops.filter(s=>s in t.destinations).map((s)=>`<span class="chip chip-${s==='紙屋町'?'kami':'hachi'}">${escape(translated(s,data.feeds[t.feed]))} ${escape(arrivalTime(time(t.destinations[s]),lang))}</span>`).join('')}</div><small class="trip-agency">${escape(translated(t.agency,data.feeds[t.feed]))}</small></div></li>`).join('');
  const healthy=live?(snapshot?.feeds||[]).filter(f=>f.ok&&fresh(f.timestamp,Date.now()/1000)):[];
  $('#realtime-status').textContent=!live?text.rtHistorical:healthy.length?text.rtActive+(healthy.length<4?' · '+text.rtPartial:''):text.rtUnavailable;
  $('#realtime-updates').innerHTML=(snapshot?.feeds||[]).map(f=>`<p>${escape(translated(f.name))} · ${f.ok&&f.timestamp?escape(new Intl.DateTimeFormat(lang,{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date(f.timestamp*1000))):'—'} · ${f.ok&&fresh(f.timestamp,Date.now()/1000)?text.rtUpdated:text.rtStale}</p>`).join('');
@@ -38,6 +40,8 @@ $('#settings').onsubmit=e=>{e.preventDefault();live=false;poller?.setEnabled(fal
 try{const r=await fetch('data/timetable.json',{cache:'no-store'});if(!r.ok)throw Error(r.status);data=await r.json();$('#sources').innerHTML=data.feeds.map(f=>`<p>${f.agencies.map(escape).join(' / ')}：${escape(f.info[0].feed_start_date)} ～ ${escape(f.info[0].feed_end_date)}</p>`).join('');render();poller=createRealtimePoller({endpoint:REALTIME_ENDPOINT,onUpdate:value=>{snapshot=value;render();}});poller.setEnabled(!document.hidden);setInterval(()=>{if(live&&!document.hidden)render();},15000);}catch(e){$('#error').hidden=false;$('#error').textContent=strings[lang].error;console.error(e);}
 
 $('#language').onchange=()=>{lang=$('#language').value;localStorage.setItem('busnavi-language',lang);render();};
-setInterval(()=>{const phase=document.body.classList.toggle('phase-hachi');$('.map-wrapper').classList.toggle('phase-hachi',phase);},1500);
+setInterval(()=>{const phase=document.body.classList.toggle('phase-hachi');$('.map-wrapper').classList.toggle('phase-hachi',phase);},2000);
 
 document.addEventListener('visibilitychange',()=>{poller?.setEnabled(live&&!document.hidden);if(!document.hidden)render();});
+
+window.addEventListener('resize',()=>fitPlatformStrips());

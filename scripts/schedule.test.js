@@ -5,3 +5,9 @@ test('calendar exceptions override weekday pattern',()=>{const f={calendar:[{ser
 test('out of coverage has no invented timetable or next-day rollover',()=>{assert.equal(selectTrips(data,{stops:['紙屋町','八丁堀']},'2026-08-30',0).length,0);assert.equal(selectTrips(data,{stops:['紙屋町','八丁堀']},'2026-11-06',86400).length,0);});
 import {strings,translate,arrivalTime} from '../i18n.js';
 test('arrival suffix and five-language GTFS translations',()=>{assert.equal(arrivalTime('12:23','ja'),'12:23着');assert.equal(arrivalTime('--:--','ja'),'--:--着');for(const lang of ['en','ko','zh-cn','zh-tw']){for(const key of Object.keys(strings.ja))assert.ok(strings[lang][key],lang+key);const feed=data.feeds.find(f=>f.file.includes('hirobus'));assert.ok(feed.translations[lang]['紙屋町']);if(lang==='en')assert.equal(translate(feed,lang,'紙屋町'),'Kamiyacho');assert.equal(translate(feed,lang,'missing'),'missing');}});
+test('north/Shinkansen-exit headsigns are excluded even when departing from the south exit',()=>{
+ for(const date of ['2026-11-06','2026-11-07','2026-11-08']){
+  const trips=selectTrips(data,{stops:['紙屋町','八丁堀']},date,0);assert.ok(trips.length);
+  assert.ok(trips.every(t=>t.origin==='広島駅'&&!t.headsign.includes('広島駅新幹線口')));
+ }
+});

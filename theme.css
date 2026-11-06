@@ -47,7 +47,7 @@ button,input{font-family:inherit}button:focus-visible{outline:3px solid #285cd0;
 .delay-minutes{display:block;font-size:11px;line-height:1.4;font-weight:600;color:#bd2836}
 /* The map and departure rows share the same two-second phase clock and .3s fade. */
 .trip--soon{animation:none;background:#ffe48a;box-shadow:0 0 30px #ffc60073;transition:background .3s ease,box-shadow .3s ease}
-body.phase-hachi .trip--soon{background:#fff6d5;box-shadow:0 0 10px #ffc60040}
+
 @media(prefers-reduced-motion:reduce){.trip--soon,body.phase-hachi .trip--soon{transition:none;background:#fff0c2;box-shadow:none}}
 
 .prediction-label--ontime,.trip--soon .prediction-label--ontime{color:#14733d;font-weight:600}
@@ -82,3 +82,16 @@ body.phase-hachi .trip--soon{background:#fff6d5;box-shadow:0 0 10px #ffc60040}
 .trip-platform{background:white;color:#243852;box-shadow:none;transition:none}
 @media(max-width:760px){.layout{padding:0 16px;gap:16px}.map-panel{padding:12px}.page-heading{padding:18px 16px}.app-header{flex-wrap:wrap;gap:12px;padding:16px}.wordmark{flex:1}.clock-display{margin-left:auto}.clock-mode{display:none}.right-stack{position:static;gap:16px}.info-panel .right-stack .timeline{flex:initial}.platform-row{display:block}.platform-row h3{font-size:13px;margin-bottom:6px}.overview-number{font-size:56px}.platform-overview{padding:14px}.settings-footer{padding:0 16px}.page-heading h1{font-size:19px;line-height:1.5}.trip,.table-labels{grid-template-columns:68px 44px minmax(0,1fr);gap:8px;padding-left:12px;padding-right:12px}.trip-route{font-size:14px}.trip-headsign-inline{font-size:12px}}
 @media(max-width:480px){.stop-number{font-size:11px}.stop-tag{width:15px;height:15px;font-size:10px}.stop-tags{border-width:1px;gap:2px}.platform-strip{gap:6px}.overview-number{min-width:60px}.wordmark{min-width:110px}.clock-time{font-size:34px}.site-footer{padding:0 16px}}
+
+/* Keep map switching at two seconds; departure rows use an independent smooth pulse. */
+@keyframes departureYellowPulse{0%,100%{background:#fff6d5;box-shadow:0 0 10px #ffc60030}50%{background:#ffe48a;box-shadow:0 0 26px #ffc60060}}
+.trip--soon{animation:departureYellowPulse 3s ease-in-out infinite;animation-delay:var(--glow-offset,0ms);transition:none}
+.platform-row h3{font-size:18px;flex-basis:112px;line-height:1.35}
+.platform-strip{display:grid;grid-template-columns:repeat(var(--platform-count,1),minmax(0,1fr));gap:var(--platform-gap,8px);flex:1;width:100%;max-width:var(--platform-max-width,100%);overflow:visible;padding:2px 0 4px}
+.platform-strip .overview-number{min-width:0;padding:0;font-size:var(--number-size,56px);width:100%}
+.departure-subline{display:flex;align-items:baseline;gap:4px;min-height:16px;line-height:16px;white-space:nowrap;font-size:10px;font-weight:400}
+.departure-subline .scheduled-time,.departure-subline .delay-minutes{display:inline;font-size:10px;line-height:16px}
+.trip-time>.prediction-label{min-height:16px;line-height:16px;font-size:10px}
+.trip,.trip--soon{padding-top:10px;padding-bottom:10px}
+@media(max-width:760px){.platform-row h3{font-size:18px}.platform-strip .overview-number{min-width:0;font-size:var(--number-size,56px)}}
+@media(prefers-reduced-motion:reduce){.trip--soon,body.phase-hachi .trip--soon{animation:none;background:#fff0c2;box-shadow:none}}
