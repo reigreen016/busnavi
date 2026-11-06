@@ -106,3 +106,5 @@ button,input{font-family:inherit}button:focus-visible{outline:3px solid #285cd0;
 .overview-number--double .number-glyph{transform:scaleX(.84);letter-spacing:-.025em}
 @media(max-width:1050px){.trip,.table-labels{grid-template-columns:80px 46px minmax(0,1fr)}}
 @media(max-width:760px){.app-header{padding:10px 16px;gap:12px}.wordmark{font-size:29px}.clock-time{font-size:34px}.trip,.table-labels{grid-template-columns:80px 44px minmax(0,1fr)}}
+
+.language-picker{display:inline-flex;align-items:center;gap:7px;margin-left:auto;color:#52657b}.language-icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.language-picker #language{margin-left:0}@media(max-width:480px){.language-picker{gap:5px}.language-icon{width:18px;height:18px}}

@@ -26,3 +26,9 @@ Object.assign(strings.en,{onTime:'On time'});
 Object.assign(strings.ko,{onTime:'정시'});
 Object.assign(strings['zh-cn'],{onTime:'准点'});
 Object.assign(strings['zh-tw'],{onTime:'準點'});
+
+Object.assign(strings.ja,{arrivalNote:'停留所の到着予測がある場合は予測時刻を表示し、未取得の場合は時刻表に（予定）を付けて表示します。'});
+Object.assign(strings.en,{arrivalNote:'Arrival predictions are shown where available. Otherwise the timetable time is marked as scheduled.'});
+Object.assign(strings.ko,{arrivalNote:'정류장 도착 예측이 있으면 예측 시각을 표시하고, 없으면 시간표 시각에 예정 표시를 붙입니다.'});
+Object.assign(strings['zh-cn'],{arrivalNote:'有车站到达预测时显示预测时间；未获取时显示时刻表时间并标注计划。'});
+Object.assign(strings['zh-tw'],{arrivalNote:'有站點抵達預測時顯示預測時間；未取得時顯示時刻表時間並標註預定。'});
