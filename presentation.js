@@ -7,7 +7,3 @@ export function departureMarkup(trip, lang) {
   const onTime = trip.predictedDeparture && trip.departure === trip.scheduledDeparture;
   return `<span class="effective-time">${time(trip.departure)}</span><small class="prediction-label${onTime ? ' prediction-label--ontime' : ''}">${onTime ? text.onTime : trip.predictedDeparture ? text.predicted : text.scheduledShort}</small>`;
 }
-// Keep the footprint of six normal cells; pack extra platforms inside it.
-export function platformGrid(count) {
-  return count <= 6 ? { columns: 2, rows: 3 } : { columns: 3, rows: Math.ceil(count / 3) };
-}

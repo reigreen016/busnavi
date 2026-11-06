@@ -29,7 +29,7 @@ test('30-second polling pauses while hidden, resumes immediately and ignores a l
  const timer=[...timers.values()][0];timers.clear();clock=30000;timer.fn();await flush();assert.equal(calls,2);poller.setEnabled(false);assert.equal(timers.size,0);poller.setEnabled(true);await flush();assert.equal(calls,3);poller.setEnabled(false);
  let resolve;const late=createRealtimePoller({endpoint:'x',fetcher:()=>new Promise(r=>resolve=r),onUpdate:()=>assert.fail('hidden request must not update'),schedule:()=>1,cancel:()=>{}});late.setEnabled(true);late.setEnabled(false);resolve(new Response(JSON.stringify({version:2,feeds:[]})));await flush();
 });
-import {departureMarkup,platformGrid} from '../presentation.js';
+import {departureMarkup} from '../presentation.js';
 test('delayed departures are reordered before upcoming platform selection',()=>{
  const earlier={...data.trips[0],id:'other',departure:36060,platform:'9'};
  const fixture={...data,trips:[{...data.trips[0],platform:'1'},earlier]};
@@ -38,7 +38,4 @@ test('delayed departures are reordered before upcoming platform selection',()=>{
  assert.equal(trips[1].scheduledDeparture,35940);
  const html=departureMarkup(trips[1],'ja');assert.match(html,/<s[^>]*>09:59<\/s>/);assert.match(html,/effective-time--delayed">10:02/);assert.match(html,/\+3 分/);
  const normal=departureMarkup(trips[0],'ja');assert.doesNotMatch(normal,/<s\b|effective-time--delayed/);
-});
-test('platform grid reserves six cells and packs every additional platform',()=>{
- for(let count=0;count<=14;count++){const grid=platformGrid(count);assert.ok(grid.columns*grid.rows>=count);if(count<=6)assert.deepEqual(grid,{columns:2,rows:3});else assert.equal(grid.columns,3);}
 });

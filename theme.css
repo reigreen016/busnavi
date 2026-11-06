@@ -33,19 +33,14 @@ button,input{font-family:inherit}button:focus-visible{outline:3px solid #285cd0;
 .map-wrapper:not(.phase-hachi) .serves-kami{box-shadow:0 0 0 2px #fff,0 0 13px 5px #285cd080}
 .map-wrapper.phase-hachi .serves-hachi .stop-number{background:#bb6012;color:#fff}
 .map-wrapper.phase-hachi .serves-hachi{box-shadow:0 0 0 2px #fff,0 0 13px 5px #bb601280}
-.map-wrapper:not(.phase-hachi) .tag-hachi,.map-wrapper.phase-hachi .tag-kami{background:white;color:#243852}
+.map-wrapper:not(.phase-hachi) .tag-hachi{background:#fff0df;color:#a45008}
+.map-wrapper.phase-hachi .tag-kami{background:#eaf0ff;color:#204ea9}
 .stop-highlight:not(.serves-kami):not(.serves-hachi) .stop-tags{display:none}
 .settings-footer #service-label{font-size:12px;line-height:1.8;color:#65748a}
 @media(prefers-reduced-motion:reduce){.stop-highlight,.stop-number{transition:none}}
 
 .realtime-status{font-size:12px;color:#53637a;margin:0 0 10px}.prediction-label{display:block;font-family:Helvetica,Arial,sans-serif;font-size:11px;font-weight:500;line-height:1.5;color:#53637a;white-space:normal}.trip--soon .prediction-label{color:inherit}
 
-/* Six full-size platform cells, with extra cells packed into the same area. */
-.next-stops{align-items:stretch}
-.next-platforms{--platform-columns:2;--platform-rows:3;--platform-area-height:284px;display:grid;grid-template-columns:repeat(var(--platform-columns),minmax(0,1fr));grid-template-rows:repeat(var(--platform-rows),minmax(0,1fr));height:var(--platform-area-height);align-content:stretch;gap:7px;overflow:hidden}
-.next-platforms .platform-big{height:auto;min-height:0;min-width:0;padding:3px;font-size:clamp(32px,4vw,56px);line-height:1}
-.next-platforms.platforms--compressed .platform-big{font-size:clamp(22px,3vw,40px)}
-.next-platforms .unknown-platform{grid-column:1/-1;grid-row:1/-1;align-self:center;justify-self:center;line-height:1.6;text-align:center}
 .scheduled-time{display:block;font-size:13px;line-height:1.3;font-weight:400;color:#758094;text-decoration-thickness:1px}
 .effective-time{display:block;line-height:1.15;white-space:nowrap}
 .effective-time--delayed,.trip--soon .effective-time--delayed{color:#bd2836}
@@ -53,7 +48,14 @@ button,input{font-family:inherit}button:focus-visible{outline:3px solid #285cd0;
 /* The map and departure rows share the same two-second phase clock and .3s fade. */
 .trip--soon{animation:none;background:#ffe48a;box-shadow:0 0 30px #ffc60073;transition:background .3s ease,box-shadow .3s ease}
 body.phase-hachi .trip--soon{background:#fff6d5;box-shadow:0 0 10px #ffc60040}
-@media(max-width:1050px){.next-platforms{--platform-area-height:248px}.next-platforms .platform-big{font-size:clamp(30px,4vw,48px)}.next-platforms.platforms--compressed .platform-big{font-size:clamp(21px,3vw,36px)}}
 @media(prefers-reduced-motion:reduce){.trip--soon,body.phase-hachi .trip--soon{transition:none;background:#fff0c2;box-shadow:none}}
 
 .prediction-label--ontime,.trip--soon .prediction-label--ontime{color:#14733d;font-weight:600}
+
+/* Departure platform boxes follow the same destination phase as the map. */
+.trip-platform{transition:background .3s ease,color .3s ease,border-color .3s ease,box-shadow .3s ease}
+.trip.serves-kami .trip-platform{background:#eaf0ff;color:#204ea9;border-color:#d6e1ff}
+.trip.serves-hachi:not(.serves-kami) .trip-platform{background:#fff0df;color:#a45008;border-color:#f4dcc2}
+body:not(.phase-hachi) .trip.serves-kami .trip-platform{background:#285cd0;color:#fff;border-color:#285cd0;box-shadow:0 0 10px #285cd060}
+body.phase-hachi .trip.serves-hachi .trip-platform{background:#bb6012;color:#fff;border-color:#bb6012;box-shadow:0 0 10px #bb601260}
+@media(prefers-reduced-motion:reduce){.trip-platform{transition:none}}
