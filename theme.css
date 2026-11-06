@@ -59,3 +59,20 @@ body.phase-hachi .trip--soon{background:#fff6d5;box-shadow:0 0 10px #ffc60040}
 body:not(.phase-hachi) .trip.serves-kami .trip-platform{background:#285cd0;color:#fff;border-color:#285cd0;box-shadow:0 0 10px #285cd060}
 body.phase-hachi .trip.serves-hachi .trip-platform{background:#bb6012;color:#fff;border-color:#bb6012;box-shadow:0 0 10px #bb601260}
 @media(prefers-reduced-motion:reduce){.trip-platform{transition:none}}
+
+/* Match the two panel areas; the map determines their shared desktop height. */
+.layout{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.map-wrapper img{height:auto;aspect-ratio:1824/2336}
+.page-heading{flex-wrap:wrap}
+.page-heading .map-legend{margin:0 0 0 auto;justify-content:flex-end;gap:10px}
+.page-heading .map-legend>span{padding:7px 12px;display:inline-flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap}
+.page-heading .legend-kami{background:#285cd0;color:#fff}
+.page-heading .legend-hachi{background:#bb6012;color:#fff}
+.info-panel{position:relative;min-height:0}
+.info-panel .timeline{position:absolute;inset:0;display:flex;flex-direction:column;min-height:0}
+.info-panel .trip-list{flex:1;min-height:0;max-height:none}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.info-panel .timeline{position:static}.info-panel .trip-list{flex:initial;max-height:550px}.page-heading .map-legend>span{font-size:12px;padding:6px 10px}}
+
+@media(max-width:480px){.app-header{gap:12px}.clock-mode{display:none}.clock-display{gap:0}}
+
+.stop-highlight[data-platform="23"] .stop-tags,.stop-highlight[data-platform="20"] .stop-tags,.stop-highlight[data-platform="17"] .stop-tags{left:auto;right:calc(100% + 5px)}

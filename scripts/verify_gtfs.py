@@ -11,8 +11,13 @@ for i,feed in enumerate(data['feeds']):
   stops={r['stop_id']:r for r in read('stops.txt')};times=defaultdict(dict)
   for r in read('stop_times.txt'):times[r['trip_id']][int(r['stop_sequence'])]=r
   trips=[t for t in data['trips'] if t['feed']==i]
+  definitions={r['trip_id']:r for r in read('trips.txt')}
+  services={t['service'] for t in trips}
+  assert feed['calendar']==[r for r in read('calendar.txt') if r['service_id'] in services]
+  assert feed['exceptions']==[r for r in read('calendar_dates.txt') if r['service_id'] in services]
   seen=set()
   for t in trips:
+   assert t['service']==definitions[t['id']]['service_id']
    key=(t['id'],t['originSequence']);assert key not in seen;seen.add(key)
    origin=times[t['id']][t['originSequence']]
    assert stops[origin['stop_id']]['stop_name']=='広島駅'

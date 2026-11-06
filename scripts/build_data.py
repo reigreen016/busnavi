@@ -37,6 +37,16 @@ def build(source):
      route=routes[t['route_id']]
      out['trips'].append(dict(feed=idx,id=t['trip_id'],service=t['service_id'],departure=seconds(origin['departure_time']),origin=stop['stop_name'],platform=stop.get('platform_code',''),stopId=origin['stop_id'],route=route['route_short_name'] or route['route_long_name'],routeName=route['route_long_name'],agency=agencies.get(route['agency_id'],''),headsign=origin.get('stop_headsign') or t['trip_headsign'],destinations=dests,originSequence=int(origin['stop_sequence']),pickup=origin.get('pickup_type',''),evidence=evidence));count+=1
    print(path.name,count)
+ # Keep calendar/translation records needed by the published departures only.
+ for idx,feed in enumerate(out['feeds']):
+  selected=[t for t in out['trips'] if t['feed']==idx]
+  services={t['service'] for t in selected}
+  names=targets|{'広島駅'}|set(feed['agencies'])
+  for t in selected:
+   names.update([t['route'],t['routeName'],t['headsign'],t['agency']])
+  feed['calendar']=[r for r in feed['calendar'] if r['service_id'] in services]
+  feed['exceptions']=[r for r in feed['exceptions'] if r['service_id'] in services]
+  feed['translations']={lang:{name:value for name,value in values.items() if name in names} for lang,values in feed['translations'].items()}
  return out
 
 if __name__=='__main__':
